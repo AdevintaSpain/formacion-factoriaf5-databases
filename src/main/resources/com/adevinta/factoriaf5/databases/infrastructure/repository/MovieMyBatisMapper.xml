@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+        'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+
+<mapper namespace="com.adevinta.factoriaf5.databases.infrastructure.repository.MovieMyBatisMapper">
+
+    <sql id="movie_filters">
+        where 1=1
+        <if test="text != null">
+            and lower(title) like lower(concat('%', #{text}, '%'))
+        </if>
+        <if test="minYear != null">
+            and release_year &gt;=#{minYear}
+        </if>
+        <if test="maxYear != null">
+            and release_year &lt;=#{maxYear}
+        </if>
+        <if test="platformIds != null and !platformIds.isEmpty()">
+            and id in (
+            select mp.movie_id from movie_platform mp inner join platform p on mp.platform_id = p.id
+            where p.id in
+            <foreach item="p_id" collection="platformIds" open="(" separator="," close=")">#{p_id}</foreach>
+            )
+        </if>
+    </sql>
+
+    <select id="countMovies" resultType="int">
+        select count(*) from movie
+        <include refid="movie_filters"/>
+    </select>
+
+    <select id="queryMovies" resultType="com.adevinta.factoriaf5.databases.infrastructure.repository.schema.MovieRow">
+        select * from movie
+        <include refid="movie_filters"/>
+        order by title, release_year
+        <if test="page != null">
+            limit #{page.size} offset #{page.offset}
+        </if>
+    </select>
+
+</mapper>
