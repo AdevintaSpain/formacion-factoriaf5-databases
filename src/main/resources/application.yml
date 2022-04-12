@@ -1,0 +1,25 @@
+spring:
+  profiles:
+    active: dev
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/adevintaff5?currentSchema=formacion"
+    username: root
+    password: xxxxxxxx
+    driver-class-name: org.postgresql.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      pool-name: ADEVINTAFF5_DB_POOL
+      connection-timeout: 5000
+      minimum-idle: 2
+      maximum-pool-size: 4
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      leak-detection-threshold: 60000
+  flyway:
+    schemas: formacion
+
+server:
+  port: 8000
+  compression:
+    enabled: true
+    mime-types: application/json
