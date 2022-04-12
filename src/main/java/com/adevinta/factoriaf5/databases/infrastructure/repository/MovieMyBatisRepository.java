@@ -7,10 +7,10 @@ import com.adevinta.factoriaf5.databases.domain.movie.MovieRepository;
 import com.adevinta.factoriaf5.databases.domain.movie.request.AddMovieRequest;
 import com.adevinta.factoriaf5.databases.domain.movie.request.SearchMovieRequest;
 import com.adevinta.factoriaf5.databases.domain.platform.Platform;
+import com.adevinta.factoriaf5.databases.infrastructure.repository.schema.AggregatedMovie;
 import com.adevinta.factoriaf5.databases.infrastructure.repository.schema.FeaturetteRow;
 import com.adevinta.factoriaf5.databases.infrastructure.repository.schema.MoviePlatformRow;
 import com.adevinta.factoriaf5.databases.infrastructure.repository.schema.MovieRow;
-import com.adevinta.factoriaf5.databases.infrastructure.repository.schema.PlatformRow;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,7 +45,7 @@ public class MovieMyBatisRepository implements MovieRepository {
   @Override
   public PagedEntityCollection<Movie> find(SearchMovieRequest searchMovieRequest) {
     Integer totalRows = movieMyBatisMapper.countMovies(searchMovieRequest);
-    List<MovieRow> movieRows = totalRows > 0 ? movieMyBatisMapper.queryMovies(searchMovieRequest) : new ArrayList<>();
+    List<AggregatedMovie> movieRows = totalRows > 0 ? movieMyBatisMapper.queryMovies(searchMovieRequest) : new ArrayList<>();
     List<Movie> movies = movieRows.stream().map(this::toMovie).collect(Collectors.toList());
     return new PagedEntityCollection<>(searchMovieRequest.getPage(), totalRows, movies);
   }
@@ -78,12 +78,9 @@ public class MovieMyBatisRepository implements MovieRepository {
     return movieRow.getId();
   }
 
-  private Movie toMovie(MovieRow movieRow) {
-    List<FeaturetteRow> featuretteRows = featuretteMyBatisMapper.selectByMovieId(movieRow.getId());
-    List<Featurette> featurettes = featuretteRows.stream().map(row -> new Featurette(row.getName(), row.getUrl())).collect(Collectors.toList());
-
-    List<PlatformRow> platformRows = platformMyBatisMapper.selectByMovieId(movieRow.getId());
-    List<Platform> platforms = platformRows.stream().map(row -> new Platform(row.getId(), row.getName())).collect(Collectors.toList());
+  private Movie toMovie(AggregatedMovie movieRow) {
+    List<Featurette> featurettes = movieRow.getFeaturettes().stream().map(row -> new Featurette(row.getName(), row.getUrl())).collect(Collectors.toList());
+    List<Platform> platforms = movieRow.getPlatforms().stream().map(row -> new Platform(row.getId(), row.getName())).collect(Collectors.toList());
 
     return new Movie(
           movieRow.getId(),

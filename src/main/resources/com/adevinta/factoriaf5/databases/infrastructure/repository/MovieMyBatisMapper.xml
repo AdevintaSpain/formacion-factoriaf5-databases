@@ -4,6 +4,26 @@
 
 <mapper namespace="com.adevinta.factoriaf5.databases.infrastructure.repository.MovieMyBatisMapper">
 
+    <resultMap id="AggregatedMovie"
+               type="com.adevinta.factoriaf5.databases.infrastructure.repository.schema.AggregatedMovie">
+        <id property="id" column="m_id"/>
+        <result property="title" column="m_title"/>
+        <result property="synopsis" column="m_synopsis"/>
+        <result property="releaseYear" column="m_release_year"/>
+        <collection property="featurettes" javaType="list"
+                    ofType="com.adevinta.factoriaf5.databases.infrastructure.repository.schema.FeaturetteRow">
+            <id property="movieId" column="f_movie_id"/>
+            <result property="itemOrder" column="f_item_order"/>
+            <result property="name" column="f_name"/>
+            <result property="url" column="f_url"/>
+        </collection>
+        <collection property="platforms" javaType="list"
+                    ofType="com.adevinta.factoriaf5.databases.infrastructure.repository.schema.PlatformRow">
+            <id property="id" column="p_id"/>
+            <result property="name" column="p_name"/>
+        </collection>
+    </resultMap>
+
     <sql id="movie_filters">
         where 1=1
         <if test="text != null">
@@ -29,13 +49,36 @@
         <include refid="movie_filters"/>
     </select>
 
-    <select id="queryMovies" resultType="com.adevinta.factoriaf5.databases.infrastructure.repository.schema.MovieRow">
-        select * from movie
+    <sql id="selectMovieIds">
+        select id from movie
         <include refid="movie_filters"/>
         order by title, release_year
         <if test="page != null">
             limit #{page.size} offset #{page.offset}
         </if>
+    </sql>
+
+    <sql id="selectMovieHeaders">
+        select
+            m.id as m_id, m.title as m_title, m.synopsis as m_synopsis, m.release_year as m_release_year,
+            f.movie_id as f_movie_id, f.item_order as f_item_order, f.name as f_name, f.url as f_url,
+            p.id as p_id, p.name as p_name
+        from movie m
+            left join featurette f on f.movie_id = m.id
+            left join movie_platform mp on mp.movie_id = m.id
+            left join platform p on p.id = mp.platform_id
+    </sql>
+
+    <select id="selectById" resultMap="AggregatedMovie">
+        <include refid="selectMovieHeaders"/>
+        where m.id=#{id}
+        order by m.title, m.release_year, f.item_order
+    </select>
+
+    <select id="queryMovies" resultMap="AggregatedMovie">
+        <include refid="selectMovieHeaders"/>
+        where m.id in (<include refid="selectMovieIds"/>)
+        order by m.title, m.release_year, f.item_order
     </select>
 
 </mapper>
