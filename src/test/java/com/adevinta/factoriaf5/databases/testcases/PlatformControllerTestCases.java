@@ -13,7 +13,7 @@ import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-abstract public class PlatformControllerTestCases extends AbstractDatabaseTestCase {
+abstract public class PlatformControllerTestCases extends AbstractTestCase {
 
   @Autowired
   private PlatformMyBatisMapper platformMyBatisMapper;

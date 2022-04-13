@@ -1,6 +1,5 @@
 package com.adevinta.factoriaf5.databases.application.movie;
 
-import com.adevinta.factoriaf5.databases.domain.core.EntityCollection;
 import com.adevinta.factoriaf5.databases.domain.core.PagedEntityCollection;
 import com.adevinta.factoriaf5.databases.domain.movie.Movie;
 import com.adevinta.factoriaf5.databases.domain.movie.MovieRepository;

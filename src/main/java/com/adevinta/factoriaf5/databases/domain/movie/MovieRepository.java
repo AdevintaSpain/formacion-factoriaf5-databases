@@ -1,6 +1,5 @@
 package com.adevinta.factoriaf5.databases.domain.movie;
 
-import com.adevinta.factoriaf5.databases.domain.core.EntityCollection;
 import com.adevinta.factoriaf5.databases.domain.core.PagedEntityCollection;
 import com.adevinta.factoriaf5.databases.domain.movie.request.AddMovieRequest;
 import com.adevinta.factoriaf5.databases.domain.movie.request.SearchMovieRequest;
