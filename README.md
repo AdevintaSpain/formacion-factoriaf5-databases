@@ -2,6 +2,39 @@
 
 Este repositorio sirve como soporte práctico en la formación de bases de datos para Factoría F5.
 
+Requiere:
+- Java 11
+- Docker
+
+Referencias de la implementación:
+
+- [Spring Boot Initializr](https://start.spring.io/#!type=gradle-project&language=java&platformVersion=2.6.6&packaging=jar&jvmVersion=11&groupId=com.adevinta.factoriaf5.databases&artifactId=formacion&name=formacion&description=Demo%20project&packageName=com.adevinta.factoriaf5.databases&dependencies=mybatis,flyway,web,postgresql) como base del proyecto
+- Arquitectura hexagonal ([referencia#1](https://netflixtechblog.com/ready-for-changes-with-hexagonal-architecture-b315ec967749), [referencia#2](https://reflectoring.io/spring-hexagonal/))
+- [MyBatis 3 Spring Boot Starter](https://github.com/mybatis/spring-boot-starter) Para ejemplificar el desarrollo con SQL
+  - [Getting started](https://mybatis.org/mybatis-3/getting-started.html)
+- [PostgreSQL](https://www.postgresql.org/docs/14/sql.html) como sistema gestor de bases de datos
+  - [SQL Tutorial](https://www.sqltutorial.org/)
+- [Flyway](https://flywaydb.org/documentation/getstarted/how) para ejecutar actualizaciones de la base de datos
+- [Docker Compose](https://hub.docker.com/_/postgres) para levantar PostgreSQL en local
+
+La ejecución de los tests inicializa una base de datos con datos inicializados
+
+```
+./gradlew test
+```
+
+La ejecución en local requiere arrancar la imagen dockerizada de la base de datos
+
+```
+docker-compose up -d
+
+./gradlew bootRun
+
+...
+docker-compose down
+
+```
+
 ## Caso práctico
 
 Iterar el desarrollo de una API para un buscador de películas haciendo émfasis sólo en lo relacionado con la capa de persistencia con implementación en SQL.
@@ -68,17 +101,6 @@ Para poder consultar las películas con más datos en la base de datos, debe per
 - paginación de resultados
 
 ## Diseño de la API
-
-Referencias de la implementación:
-
-- [Spring Boot Initializr](https://start.spring.io/#!type=gradle-project&language=java&platformVersion=2.6.6&packaging=jar&jvmVersion=11&groupId=com.adevinta.factoriaf5.databases&artifactId=formacion&name=formacion&description=Demo%20project&packageName=com.adevinta.factoriaf5.databases&dependencies=mybatis,flyway,web,postgresql) como base del proyecto
-- Arquitectura hexagonal ([referencia#1](https://netflixtechblog.com/ready-for-changes-with-hexagonal-architecture-b315ec967749), [referencia#2](https://reflectoring.io/spring-hexagonal/))
-- [MyBatis 3 Spring Boot Starter](https://github.com/mybatis/spring-boot-starter) Para ejemplificar el desarrollo con SQL
-  - [Getting started](https://mybatis.org/mybatis-3/getting-started.html)
-- [PostgreSQL](https://www.postgresql.org/docs/14/sql.html) como sistema gestor de bases de datos
-  - [SQL Tutorial](https://www.sqltutorial.org/)
-- [Flyway](https://flywaydb.org/documentation/getstarted/how) para ejecutar actualizaciones de la base de datos
-- [Docker Compose](https://hub.docker.com/_/postgres) para levantar PostgreSQL en local
 
 ### Dominio
 
